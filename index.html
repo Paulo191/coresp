@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Busca de Órgãos</title>
+<style>
+body {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+}
+input {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    margin-bottom: 15px;
+}
+.orgao {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 5px;
+    cursor: pointer;
+    background-color: #f9f9f9;
+}
+.orgao:hover {
+    background-color: #e9e9e9;
+}
+.detalhes {
+    display: none;
+    padding: 10px;
+    border-top: 1px solid #ccc;
+    background-color: #fff;
+}
+</style>
+</head>
+<body>
+
+<h2>Buscar Contato de Órgão</h2>
+<input type="text" id="search" placeholder="Digite nome ou sigla do órgão...">
+<div id="lista-orgaos"></div>
+
+<script>
+let dados = [];
+const search = document.getElementById('search');
+const listaOrgaos = document.getElementById('lista-orgaos');
+
+// Função para renderizar lista
+function renderLista(lista) {
+    listaOrgaos.innerHTML = '';
+    if (lista.length === 0) {
+        listaOrgaos.innerHTML = '<p>Nenhum órgão encontrado</p>';
+        return;
+    }
+    lista.forEach(item => {
+        const container = document.createElement('div');
+
+        const orgaoDiv = document.createElement('div');
+        orgaoDiv.className = 'orgao';
+        orgaoDiv.textContent = item.nome;
+
+        const detalhesDiv = document.createElement('div');
+        detalhesDiv.className = 'detalhes';
+        detalhesDiv.innerHTML = `
+            <p><strong>Sigla:</strong> ${item.sigla}</p>
+            <p><strong>Tipo:</strong> ${item.tipo}</p>
+            <p><strong>E-mails:</strong> ${item.emails.length > 0 ? item.emails.join(', ') : 'Não se aplica'}</p>
+        `;
+
+        orgaoDiv.addEventListener('click', () => {
+            detalhesDiv.style.display = detalhesDiv.style.display === 'block' ? 'none' : 'block';
+        });
+
+        container.appendChild(orgaoDiv);
+        container.appendChild(detalhesDiv);
+        listaOrgaos.appendChild(container);
+    });
+}
+
+// Carregar dados do JSON externo
+fetch('contatos.json')
+    .then(res => res.json())
+    .then(data => {
+        dados = data;
+        renderLista(dados);
+    })
+    .catch(err => {
+        console.error('Erro ao carregar contatos.json:', err);
+        listaOrgaos.innerHTML = '<p>Erro ao carregar dados.</p>';
+    });
+
+// Filtrar conforme digita
+search.addEventListener('input', function() {
+    const query = this.value.toLowerCase();
+    const filtrados = dados.filter(item =>
+        item.nome.toLowerCase().includes(query) ||
+        item.sigla.toLowerCase().includes(query)
+    );
+    renderLista(filtrados);
+});
+</script>
+
+</body>
+</html>
