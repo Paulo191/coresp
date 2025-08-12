@@ -127,31 +127,46 @@ function renderLista(lista) {
 
         const nomeSpan = document.createElement('span');
         nomeSpan.className = 'orgao-nome';
-        nomeSpan.textContent = item.nome;
+        nomeSpan.textContent = item["Órgão de execução"] || "Sem nome";
 
         const tag = document.createElement('span');
         tag.className = 'tag';
-        if (item.tipo.toLowerCase() === 'interno') {
-            tag.classList.add('interno');
-        } else if (item.tipo.toLowerCase() === 'externo conveniado') {
-            tag.classList.add('externo-conveniado');
-        } else if (item.tipo.toLowerCase() === 'externo') {
-            tag.classList.add('externo');
-        }
 
+        // Define tipo
+        let tipo = "";
+        if ((item["Órgão superior"] || "").toLowerCase().includes("advocacia geral da união")) {
+            tipo = "interno";
+        } else if ((item["Conveniado"] || "").toLowerCase() === "sim") {
+            tipo = "externo-conveniado";
+        } else {
+            tipo = "externo";
+        }
+        tag.classList.add(tipo);
+
+        // Monta detalhes
         const detalhesDiv = document.createElement('div');
         detalhesDiv.className = 'detalhes';
+
+        const emailArray = item["Email"] ? item["Email"].split(",").map(e => e.trim()) : [];
+
         detalhesDiv.innerHTML = `
-            <p><strong>Sigla:</strong> ${item.sigla}</p>
-            <p><strong>Tipo:</strong> ${item.tipo}</p>
-            <p><strong>E-mails:</strong> ${item.emails.length > 0 ? item.emails.join(', ') : 'Não se aplica'}</p>
+            <p><strong>Sigla:</strong> ${item["Sigla"] || ""}</p>
+            <p><strong>Tipo:</strong> ${tipo.replace("-", " ")}</p>
+            <p><strong>E-mails:</strong> ${emailArray.length > 0 ? emailArray.join(", ") : "Não se aplica"}</p>
         `;
 
-        // Se existir observação, adiciona
-        if (item.observacao && item.observacao.trim() !== '') {
+        // Observações automáticas
+        let obsText = "";
+        if (item["Órgão superior"]) obsText += `Órgão superior: ${item["Órgão superior"]}. `;
+        if (item["Estado"]) obsText += `Estado: ${item["Estado"]}. `;
+        if (item["Telefone"]) obsText += `Telefone: ${item["Telefone"]}. `;
+        if (item["Responde Sapiens?"]) obsText += `Responde Sapiens?: ${item["Responde Sapiens?"]}. `;
+        if (item["Link"]) obsText += `Link: ${item["Link"]}`;
+
+        if (obsText.trim() !== "") {
             const obsDiv = document.createElement('div');
             obsDiv.className = 'observacao';
-            obsDiv.textContent = item.observacao;
+            obsDiv.textContent = obsText.trim();
             detalhesDiv.appendChild(obsDiv);
         }
 
@@ -168,7 +183,7 @@ function renderLista(lista) {
     });
 }
 
-// Carrega do JSON externo
+// Carrega do JSON externo no formato original da planilha
 fetch('contatos.json')
     .then(res => res.json())
     .then(data => {
@@ -184,8 +199,8 @@ fetch('contatos.json')
 search.addEventListener('input', function() {
     const query = this.value.toLowerCase();
     const filtrados = dados.filter(item =>
-        item.nome.toLowerCase().includes(query) ||
-        item.sigla.toLowerCase().includes(query)
+        (item["Órgão de execução"] || "").toLowerCase().includes(query) ||
+        (item["Sigla"] || "").toLowerCase().includes(query)
     );
     renderLista(filtrados);
 });
