@@ -82,22 +82,21 @@
         max-height: 0;
         overflow: hidden;
         opacity: 0;
-        transition: max-height 0.4s ease, opacity 0.4s ease;
+        transition: max-height 0.5s ease, opacity 0.5s ease;
         background-color: #fafafa;
         padding: 0 16px;
         border-radius: 0 0 14px 14px;
-    }
-
-    .detalhes.open {
-        padding: 16px;
-        max-height: 800px;
-        opacity: 1;
     }
 
     .detalhes p {
         margin: 6px 0;
         font-size: 14px;
         color: #555;
+    }
+
+    .detalhes.open {
+        opacity: 1;
+        padding: 16px;
     }
 </style>
 </head>
@@ -130,7 +129,7 @@ function renderLista(lista) {
 
         const orgaoDiv = document.createElement('div');
         orgaoDiv.className = 'orgao';
-        orgaoDiv.style.animationDelay = `${index * 0.05}s`; // efeito em cascata
+        orgaoDiv.style.animationDelay = `${index * 0.05}s`;
 
         const nomeSpan = document.createElement('span');
         nomeSpan.className = 'orgao-nome';
@@ -166,7 +165,13 @@ function renderLista(lista) {
         `;
 
         orgaoDiv.addEventListener('click', () => {
-            detalhesDiv.classList.toggle('open');
+            if (detalhesDiv.classList.contains('open')) {
+                detalhesDiv.style.maxHeight = null;
+                detalhesDiv.classList.remove('open');
+            } else {
+                detalhesDiv.classList.add('open');
+                detalhesDiv.style.maxHeight = detalhesDiv.scrollHeight + "px";
+            }
         });
 
         orgaoDiv.appendChild(nomeSpan);
