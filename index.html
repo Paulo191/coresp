@@ -80,7 +80,7 @@
 
     .detalhes.open {
         padding: 16px;
-        max-height: 500px;
+        max-height: 800px;
         opacity: 1;
     }
 
@@ -88,17 +88,6 @@
         margin: 6px 0;
         font-size: 14px;
         color: #555;
-    }
-
-    .observacao {
-        background-color: #fffbe6;
-        border-left: 4px solid #ffecb3;
-        padding: 10px;
-        margin-top: 10px;
-        border-radius: 8px;
-        font-size: 13px;
-        color: #7a6a00;
-        font-style: italic;
     }
 </style>
 </head>
@@ -143,32 +132,22 @@ function renderLista(lista) {
         }
         tag.classList.add(tipo);
 
-        // Monta detalhes
+        // Monta detalhes linha a linha
         const detalhesDiv = document.createElement('div');
         detalhesDiv.className = 'detalhes';
 
         const emailArray = item["Email"] ? item["Email"].split(",").map(e => e.trim()) : [];
 
         detalhesDiv.innerHTML = `
+            <p><strong>Órgão superior:</strong> ${item["Órgão superior"] || ""}</p>
+            <p><strong>Órgão de execução:</strong> ${item["Órgão de execução"] || ""}</p>
             <p><strong>Sigla:</strong> ${item["Sigla"] || ""}</p>
-            <p><strong>Tipo:</strong> ${tipo.replace("-", " ")}</p>
-            <p><strong>E-mails:</strong> ${emailArray.length > 0 ? emailArray.join(", ") : "Não se aplica"}</p>
+            <p><strong>Estado:</strong> ${item["Estado"] || ""}</p>
+            <p><strong>Conveniado:</strong> ${item["Conveniado"] || ""}</p>
+            <p><strong>Responde Sapiens?:</strong> ${item["Responde Sapiens?"] || ""}</p>
+            <p><strong>Telefone:</strong> ${item["Telefone"] || ""}</p>
+            <p><strong>Email:</strong> ${emailArray.length > 0 ? emailArray.join(", ") : "Não se aplica"}</p>
         `;
-
-        // Observações automáticas
-        let obsText = "";
-        if (item["Órgão superior"]) obsText += `Órgão superior: ${item["Órgão superior"]}. `;
-        if (item["Estado"]) obsText += `Estado: ${item["Estado"]}. `;
-        if (item["Telefone"]) obsText += `Telefone: ${item["Telefone"]}. `;
-        if (item["Responde Sapiens?"]) obsText += `Responde Sapiens?: ${item["Responde Sapiens?"]}. `;
-        if (item["Link"]) obsText += `Link: ${item["Link"]}`;
-
-        if (obsText.trim() !== "") {
-            const obsDiv = document.createElement('div');
-            obsDiv.className = 'observacao';
-            obsDiv.textContent = obsText.trim();
-            detalhesDiv.appendChild(obsDiv);
-        }
 
         orgaoDiv.addEventListener('click', () => {
             detalhesDiv.classList.toggle('open');
