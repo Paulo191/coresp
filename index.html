@@ -4,47 +4,91 @@
 <meta charset="UTF-8">
 <title>Busca de Órgãos</title>
 <style>
-body {
-    font-family: Arial, sans-serif;
-    padding: 20px;
-}
-input {
-    width: 100%;
-    padding: 10px;
-    font-size: 16px;
-    margin-bottom: 15px;
-}
-.orgao {
-    border: 1px solid #ccc;
-    padding: 10px;
-    margin-bottom: 5px;
-    cursor: pointer;
-    background-color: #f9f9f9;
-    transition: background-color 0.3s ease;
-}
-.orgao:hover {
-    background-color: #e9e9e9;
-}
-.detalhes {
-    display: none;
-    padding: 10px;
-    border-top: 1px solid #ccc;
-    background-color: #fff;
-}
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        background-color: #f5f5f7;
+        padding: 40px;
+        color: #1d1d1f;
+    }
 
-/* Cores premium em tons pastéis */
-.orgao.interno {
-    background-color: #d4edda; /* verde pastel */
-    border-color: #b6dfc1;
-}
-.orgao.externo-conveniado {
-    background-color: #fff3cd; /* amarelo pastel */
-    border-color: #fce8a1;
-}
-.orgao.externo {
-    background-color: #f8d7da; /* vermelho pastel */
-    border-color: #f3b6bb;
-}
+    h2 {
+        font-weight: 600;
+        margin-bottom: 20px;
+    }
+
+    input {
+        width: 100%;
+        padding: 12px 16px;
+        font-size: 16px;
+        border-radius: 12px;
+        border: 1px solid #d2d2d7;
+        background-color: #fff;
+        box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);
+        transition: all 0.3s ease;
+        outline: none;
+    }
+
+    input:focus {
+        border-color: #0071e3;
+        box-shadow: 0 0 0 3px rgba(0,113,227,0.3);
+    }
+
+    .orgao {
+        background-color: #fff;
+        border-radius: 14px;
+        padding: 16px;
+        margin-bottom: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .orgao:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    .orgao-nome {
+        font-weight: 500;
+        flex: 1;
+    }
+
+    .tag {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        margin-left: 12px;
+        flex-shrink: 0;
+    }
+
+    .tag.interno { background-color: #a8e6a3; } /* verde pastel */
+    .tag.externo-conveniado { background-color: #ffe9a1; } /* amarelo pastel */
+    .tag.externo { background-color: #f5a8a8; } /* vermelho pastel */
+
+    .detalhes {
+        max-height: 0;
+        overflow: hidden;
+        opacity: 0;
+        transition: max-height 0.4s ease, opacity 0.4s ease;
+        background-color: #fafafa;
+        padding: 0 16px;
+        border-radius: 0 0 14px 14px;
+    }
+
+    .detalhes.open {
+        padding: 16px;
+        max-height: 300px;
+        opacity: 1;
+    }
+
+    .detalhes p {
+        margin: 6px 0;
+        font-size: 14px;
+        color: #555;
+    }
 </style>
 </head>
 <body>
@@ -70,16 +114,19 @@ function renderLista(lista) {
         const orgaoDiv = document.createElement('div');
         orgaoDiv.className = 'orgao';
 
-        // Aplica classe de cor conforme tipo
-        if (item.tipo.toLowerCase() === 'interno') {
-            orgaoDiv.classList.add('interno');
-        } else if (item.tipo.toLowerCase() === 'externo conveniado') {
-            orgaoDiv.classList.add('externo-conveniado');
-        } else if (item.tipo.toLowerCase() === 'externo') {
-            orgaoDiv.classList.add('externo');
-        }
+        const nomeSpan = document.createElement('span');
+        nomeSpan.className = 'orgao-nome';
+        nomeSpan.textContent = item.nome;
 
-        orgaoDiv.textContent = item.nome;
+        const tag = document.createElement('span');
+        tag.className = 'tag';
+        if (item.tipo.toLowerCase() === 'interno') {
+            tag.classList.add('interno');
+        } else if (item.tipo.toLowerCase() === 'externo conveniado') {
+            tag.classList.add('externo-conveniado');
+        } else if (item.tipo.toLowerCase() === 'externo') {
+            tag.classList.add('externo');
+        }
 
         const detalhesDiv = document.createElement('div');
         detalhesDiv.className = 'detalhes';
@@ -90,8 +137,11 @@ function renderLista(lista) {
         `;
 
         orgaoDiv.addEventListener('click', () => {
-            detalhesDiv.style.display = detalhesDiv.style.display === 'block' ? 'none' : 'block';
+            detalhesDiv.classList.toggle('open');
         });
+
+        orgaoDiv.appendChild(nomeSpan);
+        orgaoDiv.appendChild(tag);
 
         container.appendChild(orgaoDiv);
         container.appendChild(detalhesDiv);
@@ -99,7 +149,7 @@ function renderLista(lista) {
     });
 }
 
-// Carrega do JSON externo
+// Carregar do JSON externo
 fetch('contatos.json')
     .then(res => res.json())
     .then(data => {
@@ -111,7 +161,7 @@ fetch('contatos.json')
         listaOrgaos.innerHTML = '<p>Erro ao carregar dados.</p>';
     });
 
-// Filtra conforme digita
+// Filtro ao digitar
 search.addEventListener('input', function() {
     const query = this.value.toLowerCase();
     const filtrados = dados.filter(item =>
