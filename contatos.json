@@ -3,7 +3,8 @@
     "sigla": "PRF-RN",
     "nome": "Superintendência da Polícia Rodoviária Federal no Rio Grande do Norte",
     "emails": ["disep@prf.gov.br", "dicju@prf.gov.br"],
-    "tipo": "externo conveniado"
+    "tipo": "externo conveniado",
+    "observacao": "Contato preferencial via e-mail disep@prf.gov.br."
   },
   {
     "sigla": "TSE",
