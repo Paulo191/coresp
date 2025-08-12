@@ -20,6 +20,7 @@ input {
     margin-bottom: 5px;
     cursor: pointer;
     background-color: #f9f9f9;
+    transition: background-color 0.3s ease;
 }
 .orgao:hover {
     background-color: #e9e9e9;
@@ -29,6 +30,20 @@ input {
     padding: 10px;
     border-top: 1px solid #ccc;
     background-color: #fff;
+}
+
+/* Cores premium em tons pastéis */
+.orgao.interno {
+    background-color: #d4edda; /* verde pastel */
+    border-color: #b6dfc1;
+}
+.orgao.externo-conveniado {
+    background-color: #fff3cd; /* amarelo pastel */
+    border-color: #fce8a1;
+}
+.orgao.externo {
+    background-color: #f8d7da; /* vermelho pastel */
+    border-color: #f3b6bb;
 }
 </style>
 </head>
@@ -43,7 +58,6 @@ let dados = [];
 const search = document.getElementById('search');
 const listaOrgaos = document.getElementById('lista-orgaos');
 
-// Função para renderizar lista
 function renderLista(lista) {
     listaOrgaos.innerHTML = '';
     if (lista.length === 0) {
@@ -55,6 +69,16 @@ function renderLista(lista) {
 
         const orgaoDiv = document.createElement('div');
         orgaoDiv.className = 'orgao';
+
+        // Aplica classe de cor conforme tipo
+        if (item.tipo.toLowerCase() === 'interno') {
+            orgaoDiv.classList.add('interno');
+        } else if (item.tipo.toLowerCase() === 'externo conveniado') {
+            orgaoDiv.classList.add('externo-conveniado');
+        } else if (item.tipo.toLowerCase() === 'externo') {
+            orgaoDiv.classList.add('externo');
+        }
+
         orgaoDiv.textContent = item.nome;
 
         const detalhesDiv = document.createElement('div');
@@ -75,7 +99,7 @@ function renderLista(lista) {
     });
 }
 
-// Carregar dados do JSON externo
+// Carrega do JSON externo
 fetch('contatos.json')
     .then(res => res.json())
     .then(data => {
@@ -87,7 +111,7 @@ fetch('contatos.json')
         listaOrgaos.innerHTML = '<p>Erro ao carregar dados.</p>';
     });
 
-// Filtrar conforme digita
+// Filtra conforme digita
 search.addEventListener('input', function() {
     const query = this.value.toLowerCase();
     const filtrados = dados.filter(item =>
