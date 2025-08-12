@@ -64,9 +64,9 @@
         flex-shrink: 0;
     }
 
-    .tag.interno { background-color: #a8e6a3; } /* verde pastel */
-    .tag.externo-conveniado { background-color: #ffe9a1; } /* amarelo pastel */
-    .tag.externo { background-color: #f5a8a8; } /* vermelho pastel */
+    .tag.interno { background-color: #a8e6a3; }
+    .tag.externo-conveniado { background-color: #ffe9a1; }
+    .tag.externo { background-color: #f5a8a8; }
 
     .detalhes {
         max-height: 0;
@@ -80,7 +80,7 @@
 
     .detalhes.open {
         padding: 16px;
-        max-height: 300px;
+        max-height: 500px;
         opacity: 1;
     }
 
@@ -88,6 +88,17 @@
         margin: 6px 0;
         font-size: 14px;
         color: #555;
+    }
+
+    .observacao {
+        background-color: #fffbe6;
+        border-left: 4px solid #ffecb3;
+        padding: 10px;
+        margin-top: 10px;
+        border-radius: 8px;
+        font-size: 13px;
+        color: #7a6a00;
+        font-style: italic;
     }
 </style>
 </head>
@@ -136,6 +147,14 @@ function renderLista(lista) {
             <p><strong>E-mails:</strong> ${item.emails.length > 0 ? item.emails.join(', ') : 'Não se aplica'}</p>
         `;
 
+        // Se existir observação, adiciona
+        if (item.observacao && item.observacao.trim() !== '') {
+            const obsDiv = document.createElement('div');
+            obsDiv.className = 'observacao';
+            obsDiv.textContent = item.observacao;
+            detalhesDiv.appendChild(obsDiv);
+        }
+
         orgaoDiv.addEventListener('click', () => {
             detalhesDiv.classList.toggle('open');
         });
@@ -149,7 +168,7 @@ function renderLista(lista) {
     });
 }
 
-// Carregar do JSON externo
+// Carrega do JSON externo
 fetch('contatos.json')
     .then(res => res.json())
     .then(data => {
