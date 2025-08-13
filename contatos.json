@@ -3157,8 +3157,8 @@
     "Email": "gabinete@tesouro.gov.br"
   },
   {
-    "Órgão superior": "Subsecretaria de Perícia Médica Federal",
-    "Órgão de execução": "INSTITUTO NACIONAL DO SEGURO SOCIAL - INSS",
+    "Órgão superior": "INSTITUTO NACIONAL DO SEGURO SOCIAL - INSS",
+    "Órgão de execução": "Subsecretaria de Perícia Médica Federal",
     "Sigla": "",
     "Estado": "",
     "Conveniado": "Não",
@@ -3264,6 +3264,6 @@
     "Responde Sapiens?": "Não",
     "Link": "",
     "Telefone": "",
-    "Email": "protocolo@tse.jus.br"
+    "Email": "via protocolo (https://www.tse.jus.br/o-tse/sistemas/sei/sistema-eletronico-de-informacoes)"
   }
 ]
